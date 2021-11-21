@@ -1,0 +1,90 @@
+SCHEME
+
+Primitive expressions: 2, 3.3, true, +, quotient, ...
+Combinations: (+ 2 3), (quotient 10 2), (not true), ...
+
+Numbers are self evaluating; symbols are bound to values.
+Call expressions include an operator and 0 or more operands in parentheses. 
+Scheme uses the same environment model as python.
+
+Some built-in procedures:
++, -, *, /
+number?, zero?, integer?
+
+Special Forms: any combination that is not a call expressions
+If: (if <predicate> <consequent> <alternative>)
+And / or: (and <e1> ... <eN>), (or <e1> ... <eN>)
+Binding symbols: (define <symbol> <expression>)
+New procedures: (define (<symbol> <formal parameters>) <body>)
+
+Lambda Expressions:
+(lambda (<formal-parameters>) <body>)
+Two equivalent expressions:
+    (define (plus4 x) (+ x 4))
+    (define plus4 (lambda (x) (+ x 4)))
+
+More Special Forms:
+
+Cond (like if-elif-else):
+(cond ((> x 10) 'big')
+      ((> x 5)  'medium'))
+      (else     'small'))
+
+Begin - combines multiple expressions into one:
+(cond ((> x 10) (begin (print 'big') (print 'guy')))
+      else      (begin (print 'small') (print 'fry'))))
+
+Let - temporarily bind names to values, which are then unbinded after 
+the expression is evaluated.
+(define c (let ((a 3
+                 b (+ 2 2)))
+                (sqrt (+ (* a a) (* b b)))))
+Equivalent to:
+a = 3
+b = 2 + 2
+c = math.sqrt(a * a + b * b)
+But a and b are no longer binded after the let expression evaluates. 
+
+Lists:
+- Every scheme list is a linked list.
+- cons: a two arg procedure that creates a linked list
+- car: returns the first element
+- cdr: returns the rest of the list
+- nil: the empty list
+
+Despite being linked lists, they are displayed as lists of elements:
+> (cons 1 (cons 2 nil))
+(1 2)
+
+Symbolic Programming
+
+Quotation is used to refer to symbols directly:
+> (define a 1)        
+> (define b 2)
+> (list 'a 'b)       
+(a b)
+> (list 'a b)
+(1 2)
+The quote is shorthand for (quote a). It indicates the expression is the value itself, 
+rather than what the expression evaluates to. 
+
+A Scheme expression is a Scheme list:
+> (list 'quotient 10 2)
+(quotient 10 2)
+> (eval (list 'quotient 10 2))
+5
+
+Example:
+> (define (fib n)
+    (if (<= n 1) n (+ (fib (- n 2)) (fib (- n 1)))))
+> (fib 6)
+8
+> (define (fib-exp n)
+    (if (<= n 1) n (list '+ (fib-exp (- n 2)) (fib-exp (- n 1)))))
+This gives back an expression which can be evaluated to (fib 6)
+
+Quasiquotation:
+- `(a b) => (a b)
+Parts of a quasi-quoted expression can be unquoted with ,
+'(a ,(+ b 1)) => (a (unquote (+ b 1)))
+`(a ,(+ b 1)) => (a 5)
