@@ -3,5 +3,5 @@
 
 Materials from informally auditing UC Berkeley's introduction to programming course: https://inst.eecs.berkeley.edu/~cs61a/fa20/ 
 
-See `notes.md` for comprehensive study notes. 
+See [notes.md](https://github.com/shrimpactivity/cs61a/blob/master/notes.md) for comprehensive study notes. 
 
