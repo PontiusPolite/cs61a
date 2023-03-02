@@ -1,69 +1,70 @@
-"""
-CS61A NOTES
+# UC Berkeley CS61A: Structure and Interpretation of Computer Programs
+https://inst.eecs.berkeley.edu/~cs61a/fa20/
 
+Course Notes
+
+## The Basics
 Base of most languages:
     -primitive expressions and statements, which represent the simplest building blocks that the language provides,
     -means of combination, by which compound elements are built from simpler ones, and
     -means of abstraction, by which compound elements can be named and manipulated as units.
-"""
+    ```
+    from _typeshed import SupportsTrunc
+    from operator import floordiv, mod, add
 
-from _typeshed import SupportsTrunc
-from operator import floordiv, mod, add
+    def divide_exact(n, d):
+        """Return the quotient and remainder of dividing N by D.
 
-def divide_exact(n, d):
-    """Return the quotient and remainder of dividing N by D.
+        >>> q, r = divide_exact(2013, 10)
+        >>> q
+        201
+        >>> r
+        3
+        """
+        return floordiv(n, d), mod(n, d)
+    ```
 
-    >>> q, r = divide_exact(2013, 10)
-    >>> q
-    201
-    >>> r
-    3
-    """
-    return floordiv(n, d), mod(n, d)
-
-
-"""
-HIGHER ORDER FUNCTIONS
-    - a function that returns a function
-    - for example, currying - converting f(x, y) to f(x)(y)
-    - curry(f) returns a function g that takes in x. g(x) returns a function h that takes in y
-    - h(y) returns f(x, y) 
-"""
+## Higher Order Functions
+- a function that returns a function
+- for example, currying - converting f(x, y) to f(x)(y)
+- curry(f) returns a function g that takes in x. g(x) returns a function h that takes in y
+- h(y) returns f(x, y) 
+```
 def curry(f):
     def g(x):
         def h(y):
             return f(x, y)
         return h
     return g
+```
 
-"""
-LAMBDA FUNCTIONS
+## Lambda Functions
+lambda x: f(g(x))
+- A function that    takes x    and returns     f(g(x))
 
-         lambda            x            :          f(g(x))
-    "A function that    takes x    and returns     f(g(x))"
-
-    lambda x: x + 5 is equivalent to
+lambda x: x + 5 is equivalent to
+    
     def a_function(x):
         return x + 5
 
-    - the lambda function has no intrinsic name, but can be given a bound name:
-    -   f = lambda x, y: x * y
-"""
+- the lambda function has no intrinsic name, but can be given a bound name:
+`f = lambda x, y: x * y`
+```
+    def lambda_curry(f):
+        return lambda x: lambda y: f(x, y)
+        # return a function that takes x and returns: a function that takes y and returns: f(x, y)
+        # add(2, 3) = curry_add(2)(3)
 
-def lambda_curry(f):
-    return lambda x: lambda y: f(x, y)
-    # return a function that takes x and returns: a function that takes y and returns: f(x, y)
-# add(2, 3) = curry_add(2)(3)
-curry_add = lambda_curry(add)
+    curry_add = lambda_curry(add)
+    def split(n):
+        return n // 10, n % 10
+```
 
-def split(n):
-    return n // 10, n % 10
+## Decorators 
+- use higher order functions
+- The below line binds remove to the return value of trace1(remove). It's equivalent to saying remove = trace1(remove)
 
-"""
-DECORATORS use higher order functions. The below line binds remove to the
-return value of trace1(remove). It's equivalent to saying remove = trace1(remove)
-"""
-# Creating a decorator
+```
 def trace1(f):
     """returns a version of function f that prints it's name and arguments when called"""
     def traced_function(x, y):
@@ -88,13 +89,13 @@ def remove(n, digit):
             kept += (last * 10 ** digits)
             digits += 1
     return kept
+```
 
-"""
-RECURSIVE FUNCTIONS
-    - always includes the base case, and the recursive case
-    - iteration is a special case of recursion
-"""
+## Recursive Functions
+- always includes the base case, and the recursive case
+- iteration is a special case of recursion
 
+```
 def sum_digits(n):
     if n < 10: # base case, always in recursive functions
         return n
@@ -108,11 +109,12 @@ def factorial(n):
         return 1
     else:
         return n * factorial(n-1)
+```
 
-"""
-TREE RECURSION
-    - arises whenever the recursive function makes more than one call to itself
-"""
+
+## Tree Recursion
+- arises whenever the recursive function makes more than one call to itself
+```
 @trace1
 def fibonnaci(n):
     if n == 0:
@@ -149,27 +151,28 @@ def count_partitions(n, m):
         without_m = count_partitions(n, m-1) # count the partitions that don't have m included
         return with_m + without_m
 
-"""
-CONTAINERS
-"""
+```
 
+## CONTAINERS
+
+```
 list_ex = [1, 2, 3]
 list_ex[0]
 # This is a call expression, so the argument is evaluated, then the whole expression 
+```
 
-
-"""
-FOR STATEMENT
+## FOR STATEMENT
+```
     for <name> in <expression>:
         <suite>
-    
-    Execution procedure
-    1. Evaluate the header <expression>, which must yield an iterable
-    2. For each element in the sequence:
-        a. Bind <name> to that element in the current frame
-        b. Execute the entire suite
-"""
+```
+Execution procedure
+1. Evaluate the header <expression>, which must yield an iterable
+2. For each element in the sequence:
+    a. Bind <name> to that element in the current frame
+    b. Execute the entire suite
 
+```
 def count(s, value):
     total = 0
     # Sequence Iteration
@@ -199,10 +202,12 @@ odds = [1, 3, 5, 7, 9]
 evens = [x+1 for x in odds] # [2, 4, 6, 8, 10]
 factor_of_25 = [x for x in odds if 25 % x == 0] # [1, 5]
 
-"""
-STRINGS
-    - strings are sequences
-"""
+```
+
+## STRINGS
+- strings are sequences
+
+```
 # String execution
 exec("g = lambda y: y + 2") # g(2) -> 4
 
@@ -211,24 +216,25 @@ def recursive_string_reverse(s):
         return s
     else:
         return recursive_string_reverse(s[1:]) + s[0]
+```
 
-"""
-DATA ABSTRACTION
-    > a methodology by which functions enforce an abstraction barrier between
-    representation and use
+## DATA ABSTRACTION
+- a methodology by which functions enforce an abstraction barrier between
+representation and use
+Example: rational numbers
+```
+rational(n, d) returns a rational number x   } constructor
+numer(x) returns the numerator of x          } selectors
+denom(x) returns the denominator             }
+```
+- These three functions implement an abstract data type
+- Arithmetic implementation, in terms of constructor and selectors
+```
+def mul_rational(x, y):
+    return rational(numer(x) * numer(y),
+                    denom(x) * denom(y))
 
-    Example: rational numbers
-    rational(n, d) returns a rational number x   } constructor
-    numer(x) returns the numerator of x          } selectors
-    denom(x) returns the denominator             }
-    > These three functions implement an abstract data type
 
-
-    > Arithmetic implementation, in terms of constructor and selectors
-    def mul_rational(x, y):
-        return rational(numer(x) * numer(y),
-                        denom(x) * denom(y))
-"""
 
 # rational data implemented as functions, rather than say a list
 def rational(n, d):
@@ -244,15 +250,15 @@ def numer(x):
 
 def denom(x):
     return x("d")
+```
 
-"""
-TREES
+## TREES
 - A Tree has a root label, and a list of branches
 - Each branch is itself another Tree (with a label and a list of branches)
 - If a Tree has no branches, (i.e., branches = []), it is called a Leaf
 
 Implementing a tree abstraction below:
-"""
+```
 
 def tree(label, branches=[]):
     for branch in branches:
@@ -317,8 +323,9 @@ def print_tree(t, indent=0):
     for b in branches(t):
         print_tree(b, indent + 1)
     
-"""
-BINARY NUMBERS
+```
+
+## BINARY NUMBERS
 
 Negative Numbers
 - Represented with two's complement 
@@ -342,22 +349,16 @@ Two's Complement is nice for the computer, less nice for human eyes
 Fractional Numbers
 (+/- mantissa) * base ^ (+/- exponent)
 
-"""
 
-"""
-========================================================================================================================
-"""
-
-"""
-MUTABLE FUNCTIONS
+## MUTABLE FUNCTIONS
 - function with behavior that changes over time
     - object methods behave differently based on object attribute values
 
 - Expressions that can be replaced with its values and not change the program are
   'referentially transparent', i.e. mul(3, 5) -> 15
     - mutable functions can not be referentially transparent
-"""
 
+```
 def make_withdraw(balance):
     """Return a withdraw function with a starting balance."""
 
@@ -387,8 +388,9 @@ def combo(a, b):
 
     
 
-"""
-ITERATORS
+```
+
+## ITERATORS
 - a container can provide an iterator that provides access to its elements in some order
     - think of an iterator as a marker that moves forward when next() is called
         - the marker starts at 0, and the iterator contains everything after the marker
@@ -407,14 +409,15 @@ Built-In Functions:
     - list(iterable)
     - tuple(iterable)
     - sorted(iterable)
-"""
+
+```
 s = [3, 4, 5]
 t = iter(s)
 next(t) # 3
 next(t) # 4
+```
 
-"""
-GENERATOR FUNCTIONS
+## GENERATOR FUNCTIONS
 - return an iterator using 'yield' statements
     - can yield multiple times
 
@@ -424,10 +427,9 @@ GENERATOR FUNCTIONS
 
 - a 'yield from' statement can yield from an iterator/iterable. The following are equivalent:
 
+```
 for x in a:     |     yield from a
     yield x     |
-
-"""
 
 def plus_minus(x):
     yield x
@@ -448,10 +450,10 @@ def substrings(s):
     if s:
         yield from prefixes(s)
         yield from substrings(s[1:])
+```
 
 
-"""
-OBJECTS
+## OBJECTS
 
 - A Class combines and abstracts data and functions
 - Object is instantiation of a class
@@ -465,8 +467,8 @@ OBJECTS
 - A Method is an attribute that is a function
     - tom_account.deposit(100) is a method, where tom_account is  passed in as the first
       argument in deposit
-"""
 
+```
 class Account:
     interest = 0.02 # a class attribute
     def __init__(self, account_holder): # class constructor
@@ -480,20 +482,21 @@ class Account:
             return "Insufficient Funds"
         self.balance -= amount
         return self.balance
+```
 
-"""
-INHERITANCE
+## INHERITANCE
+```
 class <name>(<base class>):
     <suite>
-
+```
 - This new class inherits from the base class
 - base class attributes aren't copied into subclasses!
 
 - Inheritance is best to represent an 'is-a' relationship
 - Composition (when one object has another one as an attribute) is best when they have
   a 'has-a' relationship
-"""
 
+```
 class CheckingAccount(Account):
     """A bank account that charges for withdrawals"""
     withdraw_fee = 1
@@ -526,10 +529,10 @@ class Bank:
     def too_big_to_fail(self):
         return len(self.accounts) > 1 
 
-"""
-MULTIPLE INHERITANCE
-"""
+```
+## MULTIPLE INHERITANCE
 
+```
 class SavingsAccount(Account):
     deposit_fee = 2
     def deposit(self, amount):
@@ -539,9 +542,9 @@ class AsSeenOnTVAccount(CheckingAccount, SavingsAccount):
     def __init__(self, account_holder):
         self.holder = account_holder
         self.balance = 1
+```
 
-"""
-STRING REPRESENTATIONS
+### STRING REPRESENTATIONS
 - In python, all objects produce two string representations
     - str is legible to humans
     - repr is legible to the interpreter
@@ -549,9 +552,9 @@ STRING REPRESENTATIONS
         - evel(repr(expression)) will usually return the expression
     - these are often the same
     - print() will invoke the str method, which invoes __str__() see below
-"""
 
-"""
+
+
 POLYMORPHIC FUNCTIONS
 - can be applied to many types of data
 - str and repr are both polymorphic
@@ -560,13 +563,13 @@ POLYMORPHIC FUNCTIONS
     - str is technically a class, not a function 
 
 - an Interface is a set of shared attribute names that elicit similar behavior from different classes
-"""
 
+```
 def repr(x):
     return type(x).__repr__(x) # this makes sure the instance attribute is ignored
+```
 
-"""
-SPECIAL METHOD NAMES IN PYTHON
+## SPECIAL METHOD NAMES IN PYTHON
 - start and end with two underscores, and interact with built in python stuff
 
 __init__, __repr__, __add__, __bool__, __float__
@@ -579,8 +582,8 @@ Ratio(1, 3).__add__(Ratio(1, 6))
 
 Side note: isInstance() is different than type(). isInstance will see if that object is any
     of the subclasses as well. 
-"""
 
+```
 from math import gcd
 
 class Ratio:
@@ -593,14 +596,14 @@ class Ratio:
         d = self.denom * other.denom
         g = gcd(n, d)
         return Ratio(n // g, d // g)
+```
 
-"""
-LINKED-LISTS
+## LINKED-LISTS
 - either empty, or a first value and the rest of the linked list
 
 Link(3, Link(4, Link(5, Link.empty)))
-"""
 
+```
 class Link:
     
     empty = () # some zero-length sequence
@@ -615,11 +618,11 @@ s.first # 3
 s.rest.first # 4
 s.rest.rest.first # 5
 s.rest.rest.rest is Link.empty # True
+```
 
-"""
 Recursion is very common for processing linked list
-"""
 
+```
 def range_link(start, end):
     """Return a Link containing consecutive ints from start to end."""
     if start >= end:
@@ -654,17 +657,16 @@ def add(s, v):
     elif s.first < v:
         s.rest = add(s.rest, v)
     return s
+```
 
-"""
-MODULAR DESIGN
+## MODULAR DESIGN
 - Separation of Concerns: isolate different parts of a program that address different concerns
 - modular components can be developed/tested independently
-"""
 
-"""
-MANIPULATING ITERABABLES EXAMPLE PROBLEMS
-"""
 
+## MANIPULATING ITERABABLES EXAMPLE PROBLEMS
+
+```
 def get_smallest_indices(s):
     """Return a list of indices of all the elements in s with the smallest absolute value.
     >>> get_smallest_indices([-4, -3, -2, 3, 2, 4])
@@ -705,9 +707,9 @@ def elements_equal(s):
     #         return False
     # return True
     return all([s[i] in s[:i] + s[i + 1:] for i in range(len(s) - 1)])
+```
 
-"""
-EXCEPTIONS
+## EXCEPTIONS
 - a built in mechanism to declare and respond to exceptional conditions.
 - Python raises an exception when an error occurs.
 - Unhandled exceptions will cause Python to halt excecution and print a stack trace.
@@ -730,18 +732,20 @@ Raise Statement
 
 Try Statements
 
+```
 try:
     <try suite>
 except <exception class> as <name>:
     <except suite>
+```
 
 - the try suite is executed first
 - if during execution an exception is raised and the exception inherits from 
     the <exception class>, the except suite is executed
     - the exception message is bound to name
 
-"""
 
+```
 try:
     x = 1/0
 except ZeroDivisionError as e:
@@ -775,9 +779,9 @@ def reduce(f, s, initial):
     for x in s:
         initial = f(initial, x)
     return initial
+```
 
-"""
-INTERPRETERS
+## INTERPRETERS
 
 - Programming Languages are like trees, with lists of sub expressions
     - Syntax: the legal statements and expressions
@@ -803,14 +807,7 @@ Read-Eval-Print-Loop
 
 Exceptions are raised everywhere in an interpreter
 
-"""
-
-"""
-========================================================================================================================
-"""
-
-"""
-DECLARITIVE PROGRAMMING LANGUAGES
+## DECLARITIVE PROGRAMMING LANGUAGES
 - A program is a description of the desired result
 - versus imperative languages, which descibe a computational process
 
@@ -832,6 +829,7 @@ Aliases and Dot Expressions
 
     select [columns] from [table] where [condition] order by [order];
 
+```
 Ex.: selecting pairs of siblings from dog table:
     select a.child as first, b.child as second
         from parents as a, parents as b
@@ -843,12 +841,13 @@ Ex.: selecting pairs of siblings from dog table:
         abraham           grover
         delano            grover
 
+```
 Numerical Expressions
 
 
-AGGREGATION
+## AGGREGATION
  - an aggregate function in the [columns] clause computes a value from a group of rows
-
+```
 create table animals as
     select "dog" as kind, 4 as legs, 20 as weight union
     select "cat"        , 4        , 10           union
@@ -874,9 +873,11 @@ create table animals as
 cat|cat
 > select avg(weight), kind from animals;
 2009.333333|t-rex   # an arbitrary row, not meaningful
+```
 
-GROUPING
+## GROUPING
 
+```
 select [columns] from [table] group by [expression] having [expression];
     - the number of groups is the number of unique values in group by expression
     - having clause filters set of groups that are aggregated
@@ -890,27 +891,27 @@ ferret|2
 parrot|3
 penguin|5
 t-rex|6000
+```
 
-
-CREATE TABLE OVERVIEW
+## CREATE TABLE OVERVIEW
 - using column constraints instead of AS SELECT statements
 > CREATE TABLE numbers (n, note);
 > CREATE TABLE numbers (n UNIQUE, note);   # will raise an error if same n is in table twice
 > CREATE TABLE numbers (n, note DEFAULT "No comment");   # default value
 
 
-DROP TABLE
+## DROP TABLE
 - if exists is optional, but will prevent an error if table doesn't exist
 > DROP TABLE IF EXISTS [name];
 
-MODIFYING TABLES
+## MODIFYING TABLES
 - insert a value into one column. Default values will be used for other columns in row.
 > INSERT INTO table(column) VALUES (value);
 - insert into all columns:
 > INSERT INTO table VALUES (value0, value1, ...);
 
-UPDATE [table] SET [column=value] WHERE [expression]
-
+## UPDATE [table] SET [column=value] WHERE [expression]
+```
 Example:
 
 > create table primes(n, prime);
@@ -935,13 +936,10 @@ Error
 3|1
 4|0
 5|1
+```
 
-"""
-
-"""
-PYTHON AND SQL
-"""
-
+## PYTHON AND SQL
+```
 import sqlite3
 
 # Won't work because we need external database file n.db
@@ -951,9 +949,10 @@ def doDatabaseThing():
     table = db.execute("SELECT * FROM nums;").fetchall() # returns a list of tuples, each tuple is a row
     db.commit()  # commits changes to file
 
-"""
-SQL INJECTION ATTACK
-"""
+```
+## SQL INJECTION ATTACK
+```
+
 def injectionAttack(db):
     name = "Robert'); DROP TABLE Students; --"
     cmd = "INSERT INTO Students VALUES ('" + name + "');"
@@ -961,35 +960,35 @@ def injectionAttack(db):
 # -- signifies a comment in SQL
 # > INSERT INTO Students VALUES ('Robert'); DROP TABLE Students; --')
 
-"""
+```
 The problem is string concatenation was used to create sql statement
 Instead, use ? template
-"""
+```
     # db.execute("INSERT INTO Students VALUES (?)", [name])
+```
 
-"""
-TAIL CALLS
+## TAIL CALLS
 
 Functional Programming
-    - All functions are pure functions
-    - No re-addignment and no mutable data types
-    - Name-value bindings are permanent
+- All functions are pure functions
+- No re-addignment and no mutable data types
+- Name-value bindings are permanent
 
 Python Recursion vs. Iteration:
-    - recursive calls always create new active frames
-        - Thus a recursive factorial function requires linear space O(n), 
-        but an iterative factorial uses constant space O(1)
-        - Tail recursion can solve this space problem
+- recursive calls always create new active frames
+    - Thus a recursive factorial function requires linear space O(n), but an iterative factorial uses constant space O(1)
+    - Tail recursion can solve this space problem
 
 A Tail Call is a call expression in a tail context:
-    - the last body sub-expression in a lambda expression
-    - sub-expressions 2 & 3 in a tail context 'if' expression
-    - all non-predicate sub-expressions in a tail context cond
-    - the last sub-expression in a tail context 'and' or 'or'
-    - the last sub-expression in a tail context 'begin' 
+- the last body sub-expression in a lambda expression
+- sub-expressions 2 & 3 in a tail context 'if' expression
+- all non-predicate sub-expressions in a tail context cond
+- the last sub-expression in a tail context 'and' or 'or'
+- the last sub-expression in a tail context 'begin' 
 
 A Tail Call frame doesn't remain active, and doesn't increase the environment size. 
 
+```
 This is not tail recursive, since more computation (adding 1) has to be done after 
 the recurse call (the recursive length call is not in a tail context):
 (define (length s)
@@ -1020,9 +1019,9 @@ MAP: applies procedure to every element and construct list with results
         (cons (procdure (car s))
             (map procedure (cdr s)))))
 
-"""
+```
 
-"""
+
 SCHEME MACROS
     - allows user-defined special forms
     - a macro is an operation performed on source code before evaluation
@@ -1036,6 +1035,7 @@ Evaluation Procedure:
 - Call the macro procedure on the operand expressions without evaluating them first
 - Evaluate the expression returned from the macro procedure
 
+```
 Example:
 (define (check val) (if val 'passed 'failed))
 
@@ -1055,10 +1055,10 @@ FOR MACRO
 (define-macro (for sym vals expr)
     (list 'map (list 'lambda (list sym) expr) vals))
 
-"""
+```
 
-"""
-DESIGNING FUNCTIONS
+
+## DESIGNING FUNCTIONS
 1. From Problem Analysis to Data Definitions
  - Identify the information that must be represented and how it is represented
 in the chosen programming language. Formulate data definitions and illustrate them 
